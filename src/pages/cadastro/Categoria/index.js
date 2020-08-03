@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-one-expression-per-line */
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 import PageDefault from "../../../components/PageDefault";
@@ -14,6 +14,20 @@ function CadastroCategoria() {
   };
   const [categorias, setCategorias] = useState([]);
   const [values, setValues] = useState(valoresIniciais);
+
+  useEffect(() => {
+    if (window.location.href.includes("localhost")) {
+      const URL = "http://localhost:8080/categorias";
+      fetch(URL).then(async (response) => {
+        if (response.ok) {
+          const resposta = await response.json();
+          setCategorias(resposta);
+          return;
+        }
+        throw new Error("Não foi possível pegar os dados");
+      });
+    }
+  }, []);
 
   function setValue(chave, valor) {
     // chave: nome, descricao, bla, bli
@@ -68,7 +82,7 @@ function CadastroCategoria() {
 
       <ul>
         {categorias.map((categoria) => (
-          <li key={`${categoria}`}>{categoria.nome}</li>
+          <li key={`${categoria.id}`}>{categoria.titulo}</li>
         ))}
       </ul>
 
